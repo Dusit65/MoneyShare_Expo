@@ -64,6 +64,27 @@ const MoneyShare = () => {
           style={styles.inputNumber}
           placeholder="ป้อนจํานวนเงิน"
           keyboardType="numeric"
+          onChangeText={(value) => {
+            // ลบตัวอักษรที่ไม่ใช่ตัวเลขและจุด
+            let newValue = value.replace(/[^0-9.]/g, "");
+
+            // ตรวจสอบว่ามีจุดเกิน 1 จุดหรือไม่
+            const dotCount = (newValue.match(/\./g) || []).length;
+            if (dotCount > 1) {
+              return; // ถ้ามีมากกว่าหนึ่งจุด ให้ไม่อัปเดตค่า
+            }
+
+            // ป้องกันไม่ให้ขึ้นต้นด้วย 0 (ยกเว้น 0.)
+            if (
+              newValue.length > 1 &&
+              newValue[0] === "0" &&
+              newValue[1] !== "."
+            ) {
+              newValue = newValue.replace(/^0+/, "");
+            }
+
+            setMoney(newValue);
+          }}
           value={money}
           onChange={(e) => setMoney(e.nativeEvent.text)}
         />
@@ -73,6 +94,11 @@ const MoneyShare = () => {
           style={styles.inputNumber}
           placeholder="ป้อนจํานวนคน"
           keyboardType="numeric"
+          onChangeText={(value) => {
+            let newValue = value.replace(/[^\d]/g, "");
+            setPeople(newValue);
+          }}
+          editable={tipStatus}
           value={people}
           onChange={(e) => setPeople(e.nativeEvent.text)}
         />
@@ -90,6 +116,10 @@ const MoneyShare = () => {
           style={styles.inputNumber}
           placeholder="ป้อนจํานวนทิป"
           keyboardType="numeric"
+          onChangeText={(value) => {
+            let newValue = value.replace(/[^\d]/g, "");
+            setPeople(newValue);
+          }}
           value={tip}
           onChange={(e) => setTip(e.nativeEvent.text)}
         />
